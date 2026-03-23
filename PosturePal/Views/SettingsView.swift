@@ -55,7 +55,10 @@ struct SettingsView: View {
                 HStack {
                     Text("Status")
                     Spacer()
-                    if healthKitManager.isAuthorized {
+                    if !healthKitManager.isAvailable {
+                        Label("Unavailable", systemImage: "exclamationmark.triangle.fill")
+                            .foregroundColor(.orange)
+                    } else if healthKitManager.isAuthorized {
                         Label("Connected", systemImage: "checkmark.circle.fill")
                             .foregroundColor(.green)
                     } else {
@@ -64,7 +67,7 @@ struct SettingsView: View {
                     }
                 }
 
-                if !healthKitManager.isAuthorized {
+                if healthKitManager.isAvailable && !healthKitManager.isAuthorized {
                     Button(action: {
                         healthKitManager.requestAuthorization()
                     }) {
@@ -75,16 +78,29 @@ struct SettingsView: View {
                     }
                 }
 
+                if healthKitManager.isAvailable && healthKitManager.isAuthorized {
+                    HStack {
+                        Text("Today's Mindful Minutes")
+                        Spacer()
+                        Text(String(format: "%.0f min", healthKitManager.todayMindfulMinutes))
+                            .foregroundColor(.secondary)
+                    }
+                }
+
                 HStack {
-                    Text("Today's Mindful Minutes")
+                    Text("Session Good Posture")
                     Spacer()
-                    Text(String(format: "%.0f min", healthKitManager.todayMindfulMinutes))
+                    Text(String(format: "%.1f min", healthKitManager.sessionGoodPostureMinutes))
                         .foregroundColor(.secondary)
                 }
             } header: {
                 Text("Apple Health")
             } footer: {
-                Text("Good posture time is logged as Mindful Minutes in Apple Health.")
+                if healthKitManager.isAvailable {
+                    Text("Good posture time is logged as Mindful Minutes in Apple Health.")
+                } else {
+                    Text("HealthKit requires a paid Apple Developer account ($99/year). Session stats are tracked locally.")
+                }
             }
 
             // About Section

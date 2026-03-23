@@ -6,19 +6,20 @@ PosturePal is a real-time health utility designed for desk workers. It uses the 
 ## Key Features
 * **Live Body Tracking:** Uses the Vision framework to track key upper-body landmarks continuously.
 * **Smart Alerts:** Provides visual and audio cues only when sustained poor posture is detected.
-* **Health Integration:** Logs periods of good posture to Apple Health as Mindful Minutes.
+* **Health Integration:** Logs periods of good posture to Apple Health as Mindful Minutes (optional).
 * **Privacy First:** 100% on-device processing. No video feeds are recorded or transmitted.
 
 ## Tech Stack
 * **Framework:** SwiftUI
 * **Camera Input:** AVFoundation
 * **Machine Learning:** Vision (VNDetectHumanBodyPoseRequest)
-* **Health Data:** HealthKit
+* **Health Data:** HealthKit (optional)
 
 ## Requirements
 * iOS 17.0+
 * iPhone with front-facing camera
 * Xcode 15.0+
+* **Optional:** Paid Apple Developer account for HealthKit integration
 
 ## Project Structure
 
@@ -63,10 +64,10 @@ Good posture time is logged to Apple Health as Mindful Minutes, helping users tr
 
 PosturePal requires the following permissions:
 
-| Permission | Usage |
-|------------|-------|
-| Camera | Monitor posture via front camera (no recording) |
-| HealthKit | Log good posture time as Mindful Minutes |
+| Permission | Required | Usage |
+|------------|----------|-------|
+| Camera | Yes | Monitor posture via front camera (no recording) |
+| HealthKit | No | Log good posture time as Mindful Minutes |
 
 All processing happens on-device. No video, images, or personal data is transmitted externally.
 
@@ -76,9 +77,17 @@ All processing happens on-device. No video, images, or personal data is transmit
 2. Select your development team in Signing & Capabilities
 3. Build and run on a physical device (camera required)
 
+### Enabling HealthKit (Optional)
+HealthKit requires a **paid Apple Developer account** ($99/year). If you have one:
+1. Open `PosturePal.entitlements` and uncomment the HealthKit keys
+2. In Xcode, go to Signing & Capabilities > + Capability > HealthKit
+3. The app will then log good posture time to Apple Health
+
+Without HealthKit, the app still works fully - session stats are tracked locally instead.
+
 ## Usage
 
-1. **Grant Permissions:** Allow camera and HealthKit access when prompted
+1. **Grant Permissions:** Allow camera access when prompted (HealthKit if enabled)
 2. **Position Device:** Place your device at eye level, about arm's length away
 3. **Start Monitoring:** Tap "Start Monitoring" to begin
 4. **Maintain Posture:** Keep your ears aligned above your shoulders

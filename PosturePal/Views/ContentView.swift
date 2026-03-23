@@ -124,12 +124,21 @@ struct ContentView: View {
                     color: .green
                 )
 
-                StatView(
-                    title: "Mindful Today",
-                    value: String(format: "%.0f min", healthKitManager.todayMindfulMinutes),
-                    icon: "heart.fill",
-                    color: .pink
-                )
+                if healthKitManager.isAvailable && healthKitManager.isAuthorized {
+                    StatView(
+                        title: "Mindful Today",
+                        value: String(format: "%.0f min", healthKitManager.todayMindfulMinutes),
+                        icon: "heart.fill",
+                        color: .pink
+                    )
+                } else {
+                    StatView(
+                        title: "Session Total",
+                        value: String(format: "%.1f min", healthKitManager.sessionGoodPostureMinutes),
+                        icon: "clock.fill",
+                        color: .blue
+                    )
+                }
             }
             .padding(.top, 16)
 
@@ -152,19 +161,26 @@ struct ContentView: View {
             .disabled(!viewModel.cameraPermissionGranted)
             .opacity(viewModel.cameraPermissionGranted ? 1 : 0.5)
 
-            // HealthKit authorization button (if needed)
-            if !healthKitManager.isAuthorized {
-                Button(action: {
-                    healthKitManager.requestAuthorization()
-                }) {
-                    HStack {
-                        Image(systemName: "heart.text.square")
-                        Text("Connect Apple Health")
+            // HealthKit status/button
+            if healthKitManager.isAvailable {
+                if !healthKitManager.isAuthorized {
+                    Button(action: {
+                        healthKitManager.requestAuthorization()
+                    }) {
+                        HStack {
+                            Image(systemName: "heart.text.square")
+                            Text("Connect Apple Health")
+                        }
+                        .font(.subheadline)
+                        .foregroundColor(.pink)
                     }
-                    .font(.subheadline)
-                    .foregroundColor(.pink)
+                    .padding(.bottom, 8)
                 }
-                .padding(.bottom, 8)
+            } else {
+                Text("HealthKit unavailable (requires paid developer account)")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+                    .padding(.bottom, 8)
             }
         }
         .padding(.bottom, 20)

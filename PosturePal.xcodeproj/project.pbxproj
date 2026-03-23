@@ -18,7 +18,7 @@
 		A1000009001 /* PostureIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000009000 /* PostureIndicatorView.swift */; };
 		A1000010001 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000010000 /* SettingsView.swift */; };
 		A1000011001 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A1000011000 /* Assets.xcassets */; };
-		A1000012001 /* HealthKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1000012000 /* HealthKit.framework */; };
+		A1000012001 /* HealthKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1000012000 /* HealthKit.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */

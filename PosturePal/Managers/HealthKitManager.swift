@@ -3,28 +3,38 @@
 //  PosturePal
 //
 //  Manages HealthKit integration for logging good posture time as Mindful Minutes
+//  HealthKit is OPTIONAL - requires paid Apple Developer account
 //
 
-import HealthKit
+import Foundation
 import Combine
+
+// Conditional HealthKit import
+#if canImport(HealthKit)
+import HealthKit
+#endif
 
 final class HealthKitManager: ObservableObject {
     // MARK: - Published Properties
     @Published private(set) var isAuthorized = false
-    @Published private(set) var authorizationStatus: HKAuthorizationStatus = .notDetermined
+    @Published private(set) var isAvailable = false
     @Published private(set) var todayMindfulMinutes: Double = 0
     @Published private(set) var error: HealthKitError?
 
+    // Local tracking when HealthKit unavailable
+    @Published private(set) var sessionGoodPostureMinutes: Double = 0
+
     // MARK: - Private Properties
-    private let healthStore = HKHealthStore()
+    #if canImport(HealthKit)
+    private var healthStore: HKHealthStore?
+    private var mindfulType: HKCategoryType?
+    #endif
     private var currentSessionStart: Date?
     private var accumulatedGoodPostureTime: TimeInterval = 0
 
-    // Mindful minutes type
-    private let mindfulType = HKObjectType.categoryType(forIdentifier: .mindfulSession)!
-
     enum HealthKitError: LocalizedError {
         case notAvailable
+        case notEntitled
         case authorizationDenied
         case saveFailed(Error)
 
@@ -32,6 +42,8 @@ final class HealthKitManager: ObservableObject {
             switch self {
             case .notAvailable:
                 return "HealthKit is not available on this device"
+            case .notEntitled:
+                return "HealthKit requires a paid Apple Developer account"
             case .authorizationDenied:
                 return "HealthKit authorization was denied"
             case .saveFailed(let error):
@@ -49,16 +61,29 @@ final class HealthKitManager: ObservableObject {
 
     /// Checks if HealthKit is available on this device
     func checkAvailability() {
+        #if canImport(HealthKit)
         guard HKHealthStore.isHealthDataAvailable() else {
+            isAvailable = false
             error = .notAvailable
             return
         }
-        checkAuthorizationStatus()
+
+        // Try to create the health store - this will fail without entitlement
+        healthStore = HKHealthStore()
+        mindfulType = HKObjectType.categoryType(forIdentifier: .mindfulSession)
+        isAvailable = true
+        #else
+        isAvailable = false
+        error = .notAvailable
+        #endif
     }
 
     /// Requests authorization to read and write mindful minutes
     func requestAuthorization() {
-        guard HKHealthStore.isHealthDataAvailable() else {
+        #if canImport(HealthKit)
+        guard isAvailable,
+              let healthStore = healthStore,
+              let mindfulType = mindfulType else {
             error = .notAvailable
             return
         }
@@ -66,21 +91,30 @@ final class HealthKitManager: ObservableObject {
         let typesToShare: Set<HKSampleType> = [mindfulType]
         let typesToRead: Set<HKObjectType> = [mindfulType]
 
-        healthStore.requestAuthorization(toShare: typesToShare, read: typesToRead) { [weak self] success, error in
+        healthStore.requestAuthorization(toShare: typesToShare, read: typesToRead) { [weak self] success, authError in
             DispatchQueue.main.async {
                 if success {
                     self?.checkAuthorizationStatus()
                     self?.fetchTodayMindfulMinutes()
-                } else if error != nil {
-                    self?.error = .authorizationDenied
+                } else if let authError = authError {
+                    // Check if it's an entitlement error
+                    if authError.localizedDescription.contains("entitlement") ||
+                       authError.localizedDescription.contains("Missing") {
+                        self?.isAvailable = false
+                        self?.error = .notEntitled
+                    } else {
+                        self?.error = .authorizationDenied
+                    }
                 }
             }
         }
+        #else
+        error = .notAvailable
+        #endif
     }
 
     /// Starts tracking a good posture session
     func startGoodPostureSession() {
-        guard isAuthorized else { return }
         if currentSessionStart == nil {
             currentSessionStart = Date()
         }
@@ -88,10 +122,7 @@ final class HealthKitManager: ObservableObject {
 
     /// Ends the current good posture session and logs to HealthKit
     func endGoodPostureSession() {
-        guard isAuthorized,
-              let startDate = currentSessionStart else {
-            return
-        }
+        guard let startDate = currentSessionStart else { return }
 
         let endDate = Date()
         let duration = endDate.timeIntervalSince(startDate)
@@ -102,29 +133,42 @@ final class HealthKitManager: ObservableObject {
             return
         }
 
-        saveMindfulSession(start: startDate, end: endDate)
+        if isAuthorized {
+            saveMindfulSession(start: startDate, end: endDate)
+        }
         currentSessionStart = nil
     }
 
     /// Accumulates good posture time without immediately saving
     func accumulateGoodPostureTime(_ seconds: TimeInterval) {
         accumulatedGoodPostureTime += seconds
+        sessionGoodPostureMinutes = accumulatedGoodPostureTime / 60.0
     }
 
     /// Saves accumulated good posture time to HealthKit
     func saveAccumulatedTime() {
-        guard isAuthorized, accumulatedGoodPostureTime >= 60 else { return }
+        guard accumulatedGoodPostureTime >= 60 else { return }
 
-        let endDate = Date()
-        let startDate = endDate.addingTimeInterval(-accumulatedGoodPostureTime)
-
-        saveMindfulSession(start: startDate, end: endDate)
+        if isAuthorized {
+            let endDate = Date()
+            let startDate = endDate.addingTimeInterval(-accumulatedGoodPostureTime)
+            saveMindfulSession(start: startDate, end: endDate)
+        }
         accumulatedGoodPostureTime = 0
+    }
+
+    /// Resets session tracking
+    func resetSession() {
+        accumulatedGoodPostureTime = 0
+        sessionGoodPostureMinutes = 0
     }
 
     /// Fetches today's total mindful minutes
     func fetchTodayMindfulMinutes() {
-        guard isAuthorized else { return }
+        #if canImport(HealthKit)
+        guard isAuthorized,
+              let healthStore = healthStore,
+              let mindfulType = mindfulType else { return }
 
         let calendar = Calendar.current
         let now = Date()
@@ -141,9 +185,9 @@ final class HealthKitManager: ObservableObject {
             predicate: predicate,
             limit: HKObjectQueryNoLimit,
             sortDescriptors: nil
-        ) { [weak self] _, samples, error in
+        ) { [weak self] _, samples, queryError in
             DispatchQueue.main.async {
-                guard error == nil,
+                guard queryError == nil,
                       let samples = samples as? [HKCategorySample] else {
                     return
                 }
@@ -157,19 +201,31 @@ final class HealthKitManager: ObservableObject {
         }
 
         healthStore.execute(query)
+        #endif
     }
 
     // MARK: - Private Methods
 
     private func checkAuthorizationStatus() {
+        #if canImport(HealthKit)
+        guard let healthStore = healthStore,
+              let mindfulType = mindfulType else {
+            isAuthorized = false
+            return
+        }
+
         let status = healthStore.authorizationStatus(for: mindfulType)
         DispatchQueue.main.async {
-            self.authorizationStatus = status
             self.isAuthorized = status == .sharingAuthorized
         }
+        #endif
     }
 
     private func saveMindfulSession(start: Date, end: Date) {
+        #if canImport(HealthKit)
+        guard let healthStore = healthStore,
+              let mindfulType = mindfulType else { return }
+
         let sample = HKCategorySample(
             type: mindfulType,
             value: HKCategoryValue.notApplicable.rawValue,
@@ -177,15 +233,16 @@ final class HealthKitManager: ObservableObject {
             end: end
         )
 
-        healthStore.save(sample) { [weak self] success, error in
+        healthStore.save(sample) { [weak self] success, saveError in
             DispatchQueue.main.async {
                 if success {
                     self?.fetchTodayMindfulMinutes()
-                } else if let error = error {
-                    self?.error = .saveFailed(error)
+                } else if let saveError = saveError {
+                    self?.error = .saveFailed(saveError)
                 }
             }
         }
+        #endif
     }
 }
 
