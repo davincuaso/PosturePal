@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 256 256" role="img" aria-labelledby="title desc"><title id="title">PosturePal logo</title><desc id="desc">An upright seated figure and alignment guide represent posture feedback.</desc><rect width="256" height="256" fill="#E8E1EF"/><path d="M85 71v100c0 12 10 22 22 22h58" fill="none" stroke="#66517D" stroke-width="9" stroke-linecap="round" opacity=".28"/>
+      <path d="M185 65v96" stroke="#9CB8A4" stroke-width="7" stroke-linecap="round" stroke-dasharray="3 13"/>
+      <circle cx="130" cy="65" r="18" fill="#66517D"/>
+      <path d="M126 104c-8 18-7 35-2 51h36c10 0 15 5 15 14v29" fill="none" stroke="#66517D" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="m130 112 19 21h22" fill="none" stroke="#66517D" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="m177 66 8-8 8 8" fill="none" stroke="#9CB8A4" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/></svg>
