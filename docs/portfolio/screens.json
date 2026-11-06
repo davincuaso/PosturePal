@@ -1,0 +1,22 @@
+[
+  {
+    "image": "screens/screen-01.png",
+    "editable": "screens/screen-01.svg",
+    "caption": "Camera permission and monitoring",
+    "kind": "recreated",
+    "source_commit": "cac03dee57918d151b79d637443d05cfb65fd65f",
+    "source_files": [
+      "PosturePal/Views/ContentView.swift"
+    ]
+  },
+  {
+    "image": "screens/screen-02.png",
+    "editable": "screens/screen-02.svg",
+    "caption": "Sensitivity and notifications",
+    "kind": "recreated",
+    "source_commit": "cac03dee57918d151b79d637443d05cfb65fd65f",
+    "source_files": [
+      "PosturePal/Views/SettingsView.swift"
+    ]
+  }
+]
