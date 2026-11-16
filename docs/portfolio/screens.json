@@ -2,30 +2,50 @@
   "status": "captured-from-running-app",
   "repository": "PosturePal",
   "sourceCommit": "63cd03ac11a8a46ba8c3b837f9c53889b99dc5fd",
-  "captured": "2026-11-16",
+  "captured": "2026-11-16T16:01:11.619Z",
   "environment": "iPhone simulator",
-  "workflowRun": "https://github.com/davincuaso/IndoorNav/actions/runs/43896106879",
-  "method": "The original SettingsView running in an iPhone simulator. Camera and Apple Health remain disconnected; no pose measurement, posture score, or HealthKit result is simulated.",
+  "workflowRun": "https://github.com/davincuaso/IndoorNav/actions/runs/43900697977",
+  "method": "The original SettingsView and the iOS camera permission request over the app’s ContentView, captured in a simulator using dark appearance. The camera image shows the real authorization dialog, not active posture detection. No camera feed, pose measurement, posture score, or HealthKit result is simulated.",
   "screens": [
     {
       "src": "screens/capture-01.webp",
       "caption": "Posture and alert settings · simulator",
       "label": "Captured from running iOS app",
       "portrait": true,
-      "alt": "Posture and alert settings · simulator. The original SettingsView running in an iPhone simulator. Camera and Apple Health remain disconnected; no pose measurement, posture score, or HealthKit result is simulated.",
+      "alt": "Posture and alert settings · simulator. The original SettingsView and the iOS camera permission request over the app’s ContentView, captured in a simulator using dark appearance. The camera image shows the real authorization dialog, not active posture detection. No camera feed, pose measurement, posture score, or HealthKit result is simulated.",
       "width": 1206,
       "height": 2622,
       "sourceCommit": "63cd03ac11a8a46ba8c3b837f9c53889b99dc5fd",
       "originalAttachment": {
         "configurationName": "Test Scheme Action",
-        "deviceId": "C1B4F8AF-9BCC-444D-A13D-4044D04E28DD",
-        "deviceName": "iPhone 16 Pro",
-        "exportedFileName": "A921C630-4D59-4725-96CB-F2F136C00174.png",
+        "deviceId": "2CC7A2C1-E1A7-4633-911A-DB60BDEB97F0",
+        "deviceName": "iPhone 17 Pro",
+        "exportedFileName": "06AB5890-7A87-4DEF-8914-823D51A38513.png",
         "isAssociatedWithFailure": false,
-        "suggestedHumanReadableName": "02-settings_0_0D7AB311-E188-4C31-9D02-ED0D036DA6AC.png",
-        "timestamp": 1794843719.678
+        "suggestedHumanReadableName": "02-settings_0_D4A6F002-7954-495F-9E38-E44DB8B60DE0.png",
+        "timestamp": 1794844879.488
       },
-      "originalPngSha256": "18a8e3fd649416171c96bc1b086bf201f34cce1ccaaa430b7d4b903a1a1dda9a"
+      "originalPngSha256": "f9983095dedf27cf359aa905e2b02ec53edc56e0742e05a25261e898087df887"
+    },
+    {
+      "src": "screens/capture-02.webp",
+      "caption": "Camera permission request · simulator",
+      "label": "Captured from running iOS app",
+      "portrait": true,
+      "alt": "Camera permission request · simulator. The original SettingsView and the iOS camera permission request over the app’s ContentView, captured in a simulator using dark appearance. The camera image shows the real authorization dialog, not active posture detection. No camera feed, pose measurement, posture score, or HealthKit result is simulated.",
+      "width": 1206,
+      "height": 2622,
+      "sourceCommit": "63cd03ac11a8a46ba8c3b837f9c53889b99dc5fd",
+      "originalAttachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "2CC7A2C1-E1A7-4633-911A-DB60BDEB97F0",
+        "deviceName": "iPhone 17 Pro",
+        "exportedFileName": "E86EE408-3EA2-472D-ACE9-366D810F0F77.png",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "01-camera-permission_0_DF16E992-474B-4899-B594-D1D0F9D5BB80.png",
+        "timestamp": 1794844871.619
+      },
+      "originalPngSha256": "9fe3db7b1d1f3df4bac7e7d553fe7c5adaea4cd8a32998d9918eb24e8d1f49ae"
     }
   ]
 }
