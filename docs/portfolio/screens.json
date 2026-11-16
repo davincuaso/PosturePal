@@ -1,8 +1,31 @@
 {
-  "status": "awaiting-device-capture",
+  "status": "captured-from-running-app",
   "repository": "PosturePal",
-  "sourceCommit": "5b0c10690adf6c975c45b5196d2286ff354ce0dc",
-  "reviewed": "2026-11-16",
-  "screens": [],
-  "reason": "Previous illustrated previews withdrawn. Genuine screenshots or recordings from the running iOS app are required."
+  "sourceCommit": "63cd03ac11a8a46ba8c3b837f9c53889b99dc5fd",
+  "captured": "2026-11-16",
+  "environment": "iPhone simulator",
+  "workflowRun": "https://github.com/davincuaso/IndoorNav/actions/runs/43896106879",
+  "method": "The original SettingsView running in an iPhone simulator. Camera and Apple Health remain disconnected; no pose measurement, posture score, or HealthKit result is simulated.",
+  "screens": [
+    {
+      "src": "screens/capture-01.webp",
+      "caption": "Posture and alert settings · simulator",
+      "label": "Captured from running iOS app",
+      "portrait": true,
+      "alt": "Posture and alert settings · simulator. The original SettingsView running in an iPhone simulator. Camera and Apple Health remain disconnected; no pose measurement, posture score, or HealthKit result is simulated.",
+      "width": 1206,
+      "height": 2622,
+      "sourceCommit": "63cd03ac11a8a46ba8c3b837f9c53889b99dc5fd",
+      "originalAttachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "C1B4F8AF-9BCC-444D-A13D-4044D04E28DD",
+        "deviceName": "iPhone 16 Pro",
+        "exportedFileName": "A921C630-4D59-4725-96CB-F2F136C00174.png",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "02-settings_0_0D7AB311-E188-4C31-9D02-ED0D036DA6AC.png",
+        "timestamp": 1794843719.678
+      },
+      "originalPngSha256": "18a8e3fd649416171c96bc1b086bf201f34cce1ccaaa430b7d4b903a1a1dda9a"
+    }
+  ]
 }
